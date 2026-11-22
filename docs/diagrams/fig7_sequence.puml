@@ -1,0 +1,45 @@
+@startuml
+skinparam defaultFontName Arial
+skinparam defaultFontSize 13
+skinparam shadowing false
+skinparam sequence {
+  ArrowColor #1A237E
+  LifeLineBorderColor #808080
+  ParticipantBackgroundColor #EAF0F8
+  ParticipantBorderColor #1A237E
+  ActorBackgroundColor #FDF3D0
+  ActorBorderColor #8A6D00
+}
+
+actor "Клиент" as client
+participant "Экран\n«Расписание»" as screen
+participant "AttendanceRepo\n.book()" as repo
+participant "MembershipRepo" as mrepo
+database "SQLite\nsport_club.db" as db
+
+client -> screen : выбор занятия,\nнажатие «Записаться»
+activate screen
+screen -> repo : book(idClient, idSession)
+activate repo
+repo -> mrepo : activeMembership(idClient)
+activate mrepo
+mrepo -> db : SELECT * FROM Memberships\nWHERE Status = 'Активен'\nAND EndDate >= текущая дата
+db --> mrepo : абонемент найден
+deactivate mrepo
+alt абонемент отсутствует
+  repo --> screen : ошибка «Запись возможна\nтолько при действующем абонементе»
+  screen --> client : сообщение об ошибке
+else абонемент действующий
+  repo -> db : SELECT COUNT(*) FROM Attendance\n(число занятых мест, повторная запись)
+  db --> repo : места есть, записи нет
+  repo -> db : INSERT INTO Attendance\n(Status = 'Записан')
+  activate db
+  db -> db : триггеры trg_attendance_unique,\ntrg_attendance_capacity,\ntrg_attendance_membership
+  db --> repo : строка вставлена
+  deactivate db
+  repo --> screen : OpResult.Ok
+  deactivate repo
+  screen --> client : «Вы записаны на занятие»,\nсписок записей обновлён
+end
+deactivate screen
+@enduml

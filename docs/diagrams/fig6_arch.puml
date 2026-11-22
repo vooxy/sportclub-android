@@ -1,0 +1,49 @@
+@startuml
+skinparam defaultFontName Arial
+skinparam defaultFontSize 13
+skinparam shadowing false
+skinparam componentStyle rectangle
+skinparam rectangle {
+  BackgroundColor #EAF0F8
+  BorderColor #1A237E
+}
+skinparam folder {
+  BackgroundColor #FFFFFF
+  BorderColor #1A237E
+}
+
+rectangle "Уровень представления (Jetpack Compose, Material 3)" as ui {
+  rectangle "Экран входа\n(авторизация)" as login
+  rectangle "Экраны клиента:\nглавная, расписание,\nзаписи, профиль" as clientUi
+  rectangle "Экраны администратора:\nклиенты, тренеры, занятия,\nабонементы, оплаты,\nтурникет, справочники" as adminUi
+  rectangle "Экраны тренера:\nзанятия, отметка\nпосещений" as trainerUi
+  rectangle "Экраны бухгалтерии:\nплатежи, отчёты" as buhUi
+}
+
+rectangle "Уровень бизнес-логики (репозитории)" as logic {
+  rectangle "UsersRepo\nClientsRepo\nTrainersRepo" as repo1
+  rectangle "ScheduleRepo\nMembershipRepo\nPaymentsRepo\nAttendanceRepo\nTypesRepo" as repo2
+  database "Транзакции:\nоформление, продление\nабонемента" as tx
+}
+
+rectangle "Уровень данных (DbHelper, SQLiteOpenHelper)" as data {
+  rectangle "Схема БД\n(9 таблиц, индексы)" as schema
+  rectangle "Контрольные данные\n(начальное заполнение)" as seed
+  rectangle "Триггеры\nцелостности (10 шт.)" as triggers
+}
+
+database "SQLite\nsport_club.db" as sqlite
+
+login --> repo1
+clientUi --> repo2
+adminUi --> repo1
+adminUi --> repo2
+trainerUi --> repo2
+buhUi --> repo2
+repo1 --> schema
+repo2 --> tx
+tx --> schema
+schema --> sqlite
+seed --> schema
+triggers --> sqlite
+@enduml

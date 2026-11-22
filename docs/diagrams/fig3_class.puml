@@ -1,0 +1,99 @@
+@startuml
+skinparam defaultFontName Arial
+skinparam defaultFontSize 13
+skinparam shadowing false
+skinparam class {
+  BackgroundColor #EAF0F8
+  BorderColor #1A237E
+  ArrowColor #1A237E
+}
+hide circle
+
+class Client {
+  id : Long
+  lastName : String
+  firstName : String
+  middleName : String?
+  gender : String?
+  birthDate : String?
+  phone : String
+  email : String?
+  cardNumber : String?
+  registrationDate : String?
+}
+class Trainer {
+  id : Long
+  lastName : String
+  firstName : String
+  middleName : String?
+  phone : String?
+  specialization : String?
+  hireDate : String?
+}
+class MembershipType {
+  id : Long
+  typeName : String
+  duration : Int
+  price : Double
+  description : String?
+}
+class Membership {
+  id : Long
+  idClient : Long
+  idMembershipType : Long
+  purchasePrice : Double?
+  startDate : String?
+  endDate : String?
+  status : String?
+}
+class Payment {
+  id : Long
+  idMembership : Long?
+  paymentDate : String?
+  amount : Double?
+  paymentMethod : String?
+  status : String?
+}
+class SessionType {
+  id : Long
+  typeName : String
+  price : Double?
+}
+class WorkoutSession {
+  id : Long
+  sessionName : String
+  idSessionType : Long?
+  idTrainer : Long?
+  startDateTime : String?
+  duration : Int
+  maxParticipants : Int
+  hall : String?
+}
+class Attendance {
+  id : Long
+  idClient : Long
+  idSession : Long?
+  visitDateTime : String?
+  paid : Boolean
+  status : String
+}
+class User {
+  id : Long
+  login : String
+  passwordHash : String
+  role : String
+  idClient : Long?
+  idTrainer : Long?
+  fullName : String?
+}
+
+Client "1" -- "0..*" Membership : оформляет
+MembershipType "1" -- "0..*" Membership : определяет >
+Membership "1" -- "0..*" Payment : оплачивается >
+Client "1" -- "0..*" Attendance : посещает
+WorkoutSession "1" -- "0..*" Attendance : включает >
+Trainer "1" -- "0..*" WorkoutSession : проводит
+SessionType "1" -- "0..*" WorkoutSession : характеризует >
+Client "1" -- "0..1" User : учётная запись
+Trainer "1" -- "0..1" User : учётная запись
+@enduml

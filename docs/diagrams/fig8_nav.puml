@@ -1,0 +1,55 @@
+@startuml
+skinparam defaultFontName Arial
+skinparam defaultFontSize 13
+skinparam shadowing false
+skinparam rectangle {
+  BackgroundColor #EAF0F8
+  BorderColor #1A237E
+}
+skinparam ArrowColor #1A237E
+
+rectangle "Экран входа\n(логин, пароль, роль)" as login
+rectangle "Клиент" as roleClient #FDF3D0
+rectangle "Администратор" as roleAdmin #FDF3D0
+rectangle "Тренер" as roleTrainer #FDF3D0
+rectangle "Бухгалтерия" as roleBuh #FDF3D0
+
+rectangle "Главная\n(статус абонемента,\nближайшие занятия)" as c1
+rectangle "Расписание\n(фильтр по типу,\nзапись на занятие)" as c2
+rectangle "Мои записи\n(отмена записи)" as c3
+rectangle "Профиль\n(покупка абонемента)" as c4
+
+rectangle "Клиенты\n(поиск, карточка,\nрегистрация)" as a1
+rectangle "Тренеры" as a2
+rectangle "Занятия\n(контроль конфликтов)" as a3
+rectangle "Абонементы\n(продление, заморозка)" as a4
+rectangle "Ещё:\nоплаты, турникет,\nсправочники типов" as a5
+
+rectangle "Мои занятия\n(предстоящие,\nпроведённые)" as t1
+rectangle "Отметка посещений\nна занятии" as t2
+
+rectangle "Журнал платежей\n(фильтр по периоду)" as b1
+rectangle "Финансовые отчёты\n(выгрузка CSV)" as b2
+
+login --> roleClient
+login --> roleAdmin
+login --> roleTrainer
+login --> roleBuh
+
+roleClient --> c1
+roleClient --> c2
+roleClient --> c3
+roleClient --> c4
+
+roleAdmin --> a1
+roleAdmin --> a2
+roleAdmin --> a3
+roleAdmin --> a4
+roleAdmin --> a5
+
+roleTrainer --> t1
+t1 --> t2
+
+roleBuh --> b1
+roleBuh --> b2
+@enduml

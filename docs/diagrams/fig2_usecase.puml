@@ -1,0 +1,54 @@
+@startuml
+skinparam defaultFontName Arial
+skinparam defaultFontSize 13
+skinparam shadowing false
+skinparam usecase {
+  BackgroundColor #EAF0F8
+  BorderColor #1A237E
+  ActorBackgroundColor #FDF3D0
+  ActorBorderColor #8A6D00
+}
+left to right direction
+
+actor "Администратор" as Admin
+actor "Тренер" as Trainer
+actor "Бухгалтерия" as Buh
+actor "Клиент" as Client
+
+rectangle "ИС «Спортивный клуб»" {
+  usecase "Управление клиентами" as UC1
+  usecase "Управление тренерами" as UC2
+  usecase "Управление расписанием\nзанятий" as UC3
+  usecase "Оформление и продление\nабонементов" as UC4
+  usecase "Контроль доступа\n(турникет)" as UC5
+  usecase "Ведение справочников\nтипов" as UC6
+  usecase "Просмотр своего\nрасписания" as UC7
+  usecase "Отметка посещений\nна занятии" as UC8
+  usecase "Просмотр журнала\nплатежей" as UC9
+  usecase "Формирование\nфинансовых отчётов" as UC10
+  usecase "Просмотр расписания\nи запись на занятие" as UC11
+  usecase "Покупка абонемента\n(онлайн-оплата)" as UC12
+  usecase "Просмотр статуса\nсвоего абонемента" as UC13
+  usecase "Проверка действующего\nабонемента" as UC14
+  usecase "Регистрация платежа\nи чека" as UC15
+}
+
+Admin --> UC1
+Admin --> UC2
+Admin --> UC3
+Admin --> UC4
+Admin --> UC5
+Admin --> UC6
+Trainer --> UC7
+Trainer --> UC8
+Buh --> UC9
+Buh --> UC10
+Client --> UC11
+Client --> UC12
+Client --> UC13
+
+UC11 ..> UC14 : <<include>>
+UC12 ..> UC15 : <<include>>
+UC4 ..> UC15 : <<include>>
+UC5 ..> UC14 : <<include>>
+@enduml

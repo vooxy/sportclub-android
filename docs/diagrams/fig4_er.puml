@@ -1,0 +1,83 @@
+@startuml
+skinparam defaultFontName Arial
+skinparam defaultFontSize 13
+skinparam shadowing false
+skinparam linetype ortho
+entity "КЛИЕНТ" as client {
+  * PK : id
+  --
+  фамилия, имя, отчество
+  пол, дата рождения
+  телефон, эл. почта
+  номер карты
+  дата регистрации
+}
+entity "ТРЕНЕР" as trainer {
+  * PK : id
+  --
+  фамилия, имя, отчество
+  телефон
+  специализация
+  дата приёма
+}
+entity "ТИП АБОНЕМЕНТА" as mtype {
+  * PK : id
+  --
+  название
+  длительность, дней
+  цена, описание
+}
+entity "АБОНЕМЕНТ" as membership {
+  * PK : id
+  * FK : idClient, idMembershipType
+  --
+  цена покупки
+  дата начала, дата окончания
+  статус
+}
+entity "ПЛАТЕЖ" as payment {
+  * PK : id
+  * FK : idMembership
+  --
+  дата платежа, сумма
+  способ оплаты, статус
+}
+entity "ТИП ЗАНЯТИЯ" as stype {
+  * PK : id
+  --
+  название, цена
+}
+entity "ЗАНЯТИЕ" as session {
+  * PK : id
+  * FK : idSessionType, idTrainer
+  --
+  название
+  дата и время, длительность
+  лимит участников, зал
+}
+entity "ПОСЕЩЕНИЕ" as visit {
+  * PK : id
+  * FK : idClient, idSession
+  --
+  дата и время
+  отметка об оплате
+  статус (Записан / Пришёл / Отменил)
+}
+entity "ПОЛЬЗОВАТЕЛЬ" as user {
+  * PK : id
+  * FK : idClient, idTrainer
+  --
+  логин, хеш пароля
+  роль, ФИО
+}
+
+client ||--o{ membership
+mtype ||--o{ membership
+membership ||--o{ payment
+client ||--o{ visit
+session ||--o{ visit
+trainer ||--o{ session
+stype ||--o{ session
+client |o--o| user
+trainer |o--o| user
+@enduml

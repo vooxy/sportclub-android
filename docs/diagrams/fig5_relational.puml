@@ -1,0 +1,91 @@
+@startuml
+skinparam defaultFontName Arial
+skinparam defaultFontSize 13
+skinparam shadowing false
+skinparam linetype ortho
+entity "Clients" as clients {
+  * ID : INTEGER <<PK>>
+  --
+  # CardNumber : TEXT
+  LastName, FirstName : TEXT NOT NULL
+  MiddleName, Gender : TEXT
+  BirthDate, Email : TEXT
+  Phone : TEXT NOT NULL
+  RegistrationDate : TEXT
+}
+entity "Trainers" as trainers {
+  * ID : INTEGER <<PK>>
+  --
+  LastName, FirstName : TEXT NOT NULL
+  MiddleName, Phone : TEXT
+  Specialization, HireDate : TEXT
+}
+entity "MembershipTypes" as mtypes {
+  * ID : INTEGER <<PK>>
+  --
+  TypeName : TEXT NOT NULL
+  Duration : INTEGER NOT NULL
+  Price : REAL NOT NULL
+  Description : TEXT
+}
+entity "Memberships" as memberships {
+  * ID : INTEGER <<PK>>
+  --
+  # ID_Client : INTEGER <<FK>> -> Clients
+  # ID_MembershipType : INTEGER <<FK>>
+  PurchasePrice : REAL
+  StartDate, EndDate : TEXT
+  Status : TEXT
+}
+entity "Payments" as payments {
+  * ID : INTEGER <<PK>>
+  --
+  # ID_Membership : INTEGER <<FK>>
+  PaymentDate : TEXT
+  Amount : REAL
+  PaymentMethod, Status : TEXT
+}
+entity "SessionTypes" as stypes {
+  * ID : INTEGER <<PK>>
+  --
+  TypeName : TEXT NOT NULL
+  Price : REAL
+}
+entity "WorkoutSessions" as sessions {
+  * ID : INTEGER <<PK>>
+  --
+  # ID_SessionType : INTEGER <<FK>>
+  # ID_Trainer : INTEGER <<FK>>
+  SessionName : TEXT NOT NULL
+  StartDateTime : TEXT
+  Duration, MaxParticipants : INTEGER
+  Hall : TEXT
+}
+entity "Attendance" as visits {
+  * ID : INTEGER <<PK>>
+  --
+  # ID_Client : INTEGER <<FK>> NOT NULL
+  # ID_Session : INTEGER <<FK>> (NULL — свободное посещение)
+  VisitDateTime : TEXT
+  Paid : INTEGER
+  Status : TEXT
+}
+entity "Users" as users {
+  * ID : INTEGER <<PK>>
+  --
+  Login : TEXT NOT NULL UNIQUE
+  PasswordHash, Role : TEXT NOT NULL
+  # ID_Client, ID_Trainer : INTEGER <<FK>>
+  FullName : TEXT
+}
+
+clients ||--o{ memberships
+mtypes ||--o{ memberships
+memberships ||--o{ payments
+clients ||--o{ visits
+sessions ||--o{ visits
+trainers ||--o{ sessions
+stypes ||--o{ sessions
+clients |o--o| users
+trainers |o--o| users
+@enduml
